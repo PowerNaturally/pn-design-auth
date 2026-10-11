@@ -32,6 +32,14 @@ jobs:
                const coredemo = require('@actions/core')
                return await coredemo.getIDToken()
            result-encoding: string
+      - name: Show files being deployed
+        run: |
+          echo "Commit: $GITHUB_SHA"
+          echo "Repository contents:"
+          ls -lah
+          echo ""
+          echo "MSAL files:"
+          ls -lah msal-client*
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
