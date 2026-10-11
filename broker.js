@@ -5,7 +5,7 @@ const CONFIG = {
   clientId: "30e376f3-2fda-4d28-ad73-bf386c51ad02",
   scope: "api://d7901a65-c502-441c-b38e-3dd03d3f6283/Calculations.Access",
   redirectUri: "https://orange-mushroom-08238f410.5.azurestaticapps.net/broker.html",
-  openerOrigin: "https://powernaturally.simprosuite.com"
+  simproOrigin: "https://powernaturally.simprosuite.com"
 };
 
 const status = document.getElementById("status");
@@ -20,18 +20,25 @@ const pca = new PublicClientApplication({
   cache: { cacheLocation: "localStorage" }
 });
 
-function send(type, payload = {}) {
-  if (!window.opener || window.opener.closed) throw new Error("The SimPro window is no longer available.");
-  window.opener.postMessage({ source: "pn-design-auth", type, ...payload }, CONFIG.openerOrigin);
+function targetWindow() {
+  if (statusOnly && window.parent && window.parent !== window) return window.parent;
+  if (window.opener && !window.opener.closed) return window.opener;
+  throw new Error("The SimPro window is no longer available.");
 }
-function success(result, account, type = "PN_AUTH_SUCCESS") {
+function send(type, payload = {}) {
+  targetWindow().postMessage({ source: "pn-design-auth", type, ...payload }, CONFIG.simproOrigin);
+}
+function returnResult(result, account, type) {
   send(type, {
     authenticated: true,
     accessToken: result.accessToken,
     expiresOn: result.expiresOn ? result.expiresOn.toISOString() : null,
     username: account?.username || ""
   });
-  window.setTimeout(() => window.close(), 100);
+  window.setTimeout(() => {
+    if (statusOnly) return;
+    window.close();
+  }, 100);
 }
 async function run() {
   await pca.initialize();
@@ -42,15 +49,13 @@ async function run() {
   if (statusOnly) {
     if (!account) {
       send("PN_AUTH_STATUS", { authenticated: false });
-      window.close();
       return;
     }
     try {
       const result = await pca.acquireTokenSilent({ account, scopes: [CONFIG.scope] });
-      success(result, account, "PN_AUTH_STATUS");
+      returnResult(result, account, "PN_AUTH_STATUS");
     } catch {
       send("PN_AUTH_STATUS", { authenticated: false, username: account.username || "" });
-      window.close();
     }
     return;
   }
@@ -61,8 +66,10 @@ async function run() {
     return;
   }
   try {
-    const result = redirectResult?.accessToken ? redirectResult : await pca.acquireTokenSilent({ account, scopes: [CONFIG.scope] });
-    success(result, account);
+    const result = redirectResult?.accessToken
+      ? redirectResult
+      : await pca.acquireTokenSilent({ account, scopes: [CONFIG.scope] });
+    returnResult(result, account, "PN_AUTH_SUCCESS");
   } catch (error) {
     if (error instanceof InteractionRequiredAuthError) {
       status.textContent = "Additional Microsoft 365 authorisation is required...";
@@ -74,6 +81,6 @@ async function run() {
 }
 run().catch(error => {
   console.error("PowerNaturally authentication broker failed", error);
-  status.textContent = `Authentication failed: ${error.message}`;
+  if (status) status.textContent = `Authentication failed: ${error.message}`;
   try { send("PN_AUTH_ERROR", { message: error.message }); } catch {}
 });
