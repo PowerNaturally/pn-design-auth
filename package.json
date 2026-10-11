@@ -1,0 +1,27 @@
+{
+  "name": "pn-design-auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PowerNaturally/pn-design-auth.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/PowerNaturally/pn-design-auth/issues"
+  },
+  "homepage": "https://github.com/PowerNaturally/pn-design-auth#readme",
+  "dependencies": {
+    "@azure/msal-browser": "^5.25.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
