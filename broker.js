@@ -4,7 +4,7 @@ const CONFIG = {
   tenantId: "88df17e8-4f1c-45a7-8ed9-6571a1161e90",
   clientId: "30e376f3-2fda-4d28-ad73-bf386c51ad02",
   scope: "api://d7901a65-c502-441c-b38e-3dd03d3f6283/Calculations.Access",
-  redirectUri: "https://orange-mushroom-08238f410.5.azurestaticapps.net/broker.html",
+  redirectUri: "https://orange-mushroom-08238f410.5.azurestaticapps.net/redirect.html",
   simproOrigin: "https://powernaturally.simprosuite.com"
 };
 
