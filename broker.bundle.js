@@ -9328,7 +9328,7 @@
     "node_modules/@azure/msal-browser/dist/packageMetadata.mjs"() {
       "use strict";
       name2 = "@azure/msal-browser";
-      version2 = "5.25.1";
+      version2 = "5.25.0";
     }
   });
 
@@ -16870,5 +16870,5 @@
 @azure/msal-browser/dist/operatingcontext/StandardOperatingContext.mjs:
 @azure/msal-browser/dist/app/PublicClientApplication.mjs:
 @azure/msal-browser/dist/index.mjs:
-  (*! @azure/msal-browser v5.25.1 2026-10-13 *)
+  (*! @azure/msal-browser v5.25.0 2026-10-06 *)
 */
